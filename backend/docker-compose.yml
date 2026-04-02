@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: kids-map-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: kidsmap
+      POSTGRES_USER: kidsmap
+      POSTGRES_PASSWORD: kidsmap
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  api:
+    build: .
+    container_name: kids-map-api
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://kidsmap:kidsmap@db:5432/kidsmap
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+      - ./scripts:/app/scripts
+
+  adminer:
+    image: adminer
+    container_name: kids-map-adminer
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
