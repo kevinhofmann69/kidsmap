@@ -1,0 +1,124 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Filter */
+#filter-container {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 10;
+}
+
+#filter-toggle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  transition: background 0.15s;
+}
+
+#filter-toggle:hover {
+  background: #f5f5f5;
+}
+
+#filter-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+#filter-menu.hidden {
+  display: none;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  transition: all 0.15s;
+}
+
+.filter-row:hover {
+  background: rgba(255,255,255,0.95);
+}
+
+.filter-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.filter-check {
+  font-size: 13px;
+  color: #555;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.filter-row.active .filter-check {
+  opacity: 1;
+}
+
+.filter-row:not(.active) .filter-label {
+  opacity: 0.5;
+}
+
+/* Marker */
+.marker {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.1s;
+}
+
+.marker:hover {
+  transform: scale(1.15);
+}
+
+.marker.playground  { background: #22c55e; }
+.marker.toilet      { background: #3b82f6; }
+.marker.playground-wc { background: #f97316; }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>KidsMap Berlin</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <div id="filter-container">
+    <button id="filter-toggle" aria-label="Filter öffnen">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+        <line x1="11" y1="18" x2="13" y2="18"/>
+      </svg>
+    </button>
+
+    <div id="filter-menu" class="hidden">
+      <button class="filter-row active" data-filter="playground">
+        <span class="filter-dot" style="background:#22c55e"></span>
+        <span class="filter-label">Spielplätze</span>
+        <span class="filter-check">✓</span>
+      </button>
+      <button class="filter-row active" data-filter="toilet">
+        <span class="filter-dot" style="background:#3b82f6"></span>
+        <span class="filter-label">Toiletten</span>
+        <span class="filter-check">✓</span>
+      </button>
+      <button class="filter-row" data-filter="playground_wc">
+        <span class="filter-dot" style="background:#f97316"></span>
+        <span class="filter-label">Spielplatz + WC</span>
+        <span class="filter-check">✓</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
