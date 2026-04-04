@@ -1,17 +1,35 @@
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://kidsmap-api.onrender.com";
 
 const ICONS = {
-  playground:    "🛝",
-  toilet:        "🚻",
-  "playground-wc": "🛝",
+  playground:    "🌞",
+  toilet:        "🚾",
+  "playground-wc": "🌞 & 🚾",
 };
+
+// --- Letzten Standort laden ---
+function getSavedView() {
+  try {
+    const saved = localStorage.getItem("kidsmap_view");
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return null;
+}
+
+function saveView(center, zoom) {
+  localStorage.setItem("kidsmap_view", JSON.stringify({
+    center: [center.lng, center.lat],
+    zoom,
+  }));
+}
+
+const savedView = getSavedView();
 
 // --- Karte ---
 const map = new maplibregl.Map({
   container: "map",
   style: "https://tiles.openfreemap.org/styles/liberty",
-  center: [13.405, 52.52],
-  zoom: 13,
+  center: savedView ? savedView.center : [13.405, 52.52],
+  zoom: savedView ? savedView.zoom : 13,
 });
 
 map.addControl(new maplibregl.NavigationControl(), "bottom-right");
@@ -104,9 +122,11 @@ async function fetchPOIs(center) {
 }
 
 map.on("moveend", () => {
+  const c = map.getCenter();
+  saveView(c, map.getZoom());
+
   clearTimeout(fetchTimeout);
   fetchTimeout = setTimeout(() => {
-    const c = map.getCenter();
     fetchPOIs({ lat: c.lat, lng: c.lng });
   }, 500);
 });
