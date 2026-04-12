@@ -2,9 +2,16 @@ const SUPABASE_URL = "https://epybdsrkxgkfrbwdnwae.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVweWJkc3JreGdrZnJid2Rud2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NTczODIsImV4cCI6MjA5MTUzMzM4Mn0.fKQ6d30zJ_rY6IsWRI7xr78uuSCEU0iM5swlJblLHbM"; // Supabase → Settings → API → anon public
 
 const ICONS = {
-  playground:    "🛝",
-  toilet:        "🚻",
+  playground:      "🛝",
+  toilet:          "🚻",
   "playground-wc": "🛝",
+  family_centre:   "🏠",
+};
+
+const LABELS = {
+  playground:    "Spielplatz",
+  toilet:        "Toilette",
+  family_centre: "Familienzentrum",
 };
 
 // --- Letzten Standort laden ---
@@ -45,9 +52,10 @@ map.addControl(
 
 // --- Filter State ---
 const filters = {
-  playground: true,
-  toilet: true,
+  playground:    true,
+  toilet:        true,
   playground_wc: false,
+  family_centre: true,
 };
 
 // --- Marker Management ---
@@ -71,10 +79,11 @@ function renderMarkers() {
 
   const visible = allPOIs.filter(poi => {
     if (filters.playground_wc) {
-      return poi.type === "playground" && poi.nearby_toilet;
+      return (poi.type === "playground" && poi.nearby_toilet) || poi.type === "family_centre";
     }
-    if (poi.type === "playground") return filters.playground;
-    if (poi.type === "toilet")     return filters.toilet;
+    if (poi.type === "playground")    return filters.playground;
+    if (poi.type === "toilet")        return filters.toilet;
+    if (poi.type === "family_centre") return filters.family_centre;
     return false;
   });
 
@@ -83,15 +92,16 @@ function renderMarkers() {
     const el = document.createElement("div");
     el.className = `marker ${cls}`;
     el.textContent = ICONS[cls] || ICONS[poi.type];
-    el.title = poi.name || (poi.type === "playground" ? "Spielplatz" : "Toilette");
+    const label = poi.name || LABELS[poi.type] || poi.type;
+    el.title = label;
 
     const marker = new maplibregl.Marker({ element: el })
       .setLngLat([poi.lng, poi.lat])
       .setPopup(
         new maplibregl.Popup({ offset: 20, closeButton: false }).setHTML(`
           <div style="font-size:13px; line-height:1.5">
-            <strong>${poi.name || (poi.type === "playground" ? "Spielplatz" : "Toilette")}</strong>
-            ${poi.nearby_toilet ? '<br><span style="color:#f97316;font-size:11px">🚻 WC in der Nähe</span>' : ""}
+            <strong>${label}</strong>
+            ${poi.nearby_toilet && poi.type === "playground" ? '<br><span style="color:#f97316;font-size:11px">🚻 WC in der Nähe</span>' : ""}
           </div>
         `)
       )
