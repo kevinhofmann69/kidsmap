@@ -1,9 +1,10 @@
-const API_BASE = "https://kidsmap-api.onrender.com";
+const SUPABASE_URL = "https://epybdsrkxgkfrbwdnwae.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVweWJkc3JreGdrZnJid2Rud2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NTczODIsImV4cCI6MjA5MTUzMzM4Mn0.fKQ6d30zJ_rY6IsWRI7xr78uuSCEU0iM5swlJblLHbM"; // Supabase → Settings → API → anon public
 
 const ICONS = {
-  playground:    "🌞",
-  toilet:        "🚾",
-  "playground-wc": "🌞 & 🚾",
+  playground:    "🛝",
+  toilet:        "🚻",
+  "playground-wc": "🛝",
 };
 
 // --- Letzten Standort laden ---
@@ -111,10 +112,15 @@ async function fetchPOIs(center) {
   lastCenter = center;
 
   try {
-    const url = `${API_BASE}/pois?lat=${center.lat}&lng=${center.lng}&radius=2000`;
-    const res = await fetch(url);
-    const json = await res.json();
-    allPOIs = json.data;
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_pois`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ lat: center.lat, lng: center.lng, radius: 2000 }),
+    });
+    allPOIs = await res.json();
     renderMarkers();
   } catch (err) {
     console.error("Fetch error:", err);
