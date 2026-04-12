@@ -119,6 +119,7 @@ html, body {
   transform: scale(1.15);
 }
 
-.marker.playground  { background: #22c55e; }
-.marker.toilet      { background: #3b82f6; }
+.marker.playground    { background: #22c55e; }
+.marker.toilet        { background: #3b82f6; }
 .marker.playground-wc { background: #f97316; }
+.marker.family_centre { background: #a855f7; }
