@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://epybdsrkxgkfrbwdnwae.supabase.co";
-const SUPABASE_ANON_KEY = "DEIN_ANON_KEY"; // Supabase → Settings → API → anon public
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVweWJkc3JreGdrZnJid2Rud2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NTczODIsImV4cCI6MjA5MTUzMzM4Mn0.fKQ6d30zJ_rY6IsWRI7xr78uuSCEU0iM5swlJblLHbM"; // Supabase → Settings → API → anon public
 
 const ICONS = {
   playground:      "🛝",
