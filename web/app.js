@@ -130,7 +130,12 @@ async function fetchPOIs(center) {
       },
       body: JSON.stringify({ lat: center.lat, lng: center.lng, radius: 2000 }),
     });
-    allPOIs = await res.json();
+    const data = await res.json();
+    if (!Array.isArray(data)) {
+      console.error("Supabase error:", data);
+      return;
+    }
+    allPOIs = data;
     renderMarkers();
   } catch (err) {
     console.error("Fetch error:", err);
@@ -149,15 +154,15 @@ map.on("moveend", () => {
 
 // Initialer Load
 map.on("load", () => {
-  if (!savedView && navigator.geolocation) {
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords;
+        lastCenter = null; // Reset damit fetchPOIs garantiert lädt
         map.flyTo({ center: [lng, lat], zoom: 14 });
-        fetchPOIs({ lat, lng });
       },
       () => {
-        // Kein Zugriff → Berlin als Fallback
+        // Kein Zugriff → aktuelle Position laden
         const c = map.getCenter();
         fetchPOIs({ lat: c.lat, lng: c.lng });
       }
