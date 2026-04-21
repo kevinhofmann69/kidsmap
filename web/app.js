@@ -1,3 +1,4 @@
+console.log("app.js geladen");
 const SUPABASE_URL = "https://epybdsrkxgkfrbwdnwae.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVweWJkc3JreGdrZnJid2Rud2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NTczODIsImV4cCI6MjA5MTUzMzM4Mn0.fKQ6d30zJ_rY6IsWRI7xr78uuSCEU0iM5swlJblLHbM";
 
@@ -92,7 +93,7 @@ map.addControl(
   }),
   "bottom-right"
 );
-
+console.log("map erstellt", map);
 // --- Filter State ---
 const filters = {
   playground:    true,
