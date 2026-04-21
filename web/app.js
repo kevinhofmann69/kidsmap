@@ -1,26 +1,11 @@
-console.log("app.js geladen");
 const SUPABASE_URL = "https://epybdsrkxgkfrbwdnwae.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVweWJkc3JreGdrZnJid2Rud2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NTczODIsImV4cCI6MjA5MTUzMzM4Mn0.fKQ6d30zJ_rY6IsWRI7xr78uuSCEU0iM5swlJblLHbM";
 
 const ICONS = {
-  playground:     "🛝",
-  toilet:         "🚾",
+  playground:      "🛝",
+  toilet:          "🚾",
   "playground-wc": "🌞",
-  family_centre:  "🫃🏻",
-};
-
-const COLORS = {
-  playground:      "#22c55e",
-  toilet:          "#3b82f6",
-  "playground-wc": "#f97316",
-  family_centre:   "#a855f7",
-};
-
-const SHADOWS = {
-  playground:      "#15803d",
-  toilet:          "#1e40af",
-  "playground-wc": "#c2410c",
-  family_centre:   "#7e22ce",
+  family_centre:   "🫃🏻",
 };
 
 const LABELS = {
@@ -28,35 +13,6 @@ const LABELS = {
   toilet:        "Toilette",
   family_centre: "Familienzentrum",
 };
-
-// --- Pin HTML erzeugen ---
-function createPinElement(cls) {
-  const color  = COLORS[cls]  || COLORS.playground;
-  const shadow = SHADOWS[cls] || SHADOWS.playground;
-  const emoji  = ICONS[cls]   || "📍";
-
-  const id = `sh-${cls}-${Math.random().toString(36).slice(2, 7)}`;
-
-  const wrapper = document.createElement("div");
-  wrapper.className = "pin-wrapper";
-  wrapper.innerHTML = `
-    <div class="pin-inner">
-      <svg viewBox="0 0 56 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <filter id="${id}" x="-40%" y="-20%" width="180%" height="180%">
-            <feDropShadow dx="0" dy="2" stdDeviation="2"
-              flood-color="${shadow}" flood-opacity="0.3"/>
-          </filter>
-        </defs>
-        <path d="M28 4C16.954 4 8 12.954 8 24C8 38 28 68 28 68C28 68 48 38 48 24C48 12.954 39.046 4 28 4Z"
-              fill="${color}" filter="url(#${id})"/>
-      </svg>
-      <div class="pin-emoji">${emoji}</div>
-    </div>
-    <div class="pin-shadow"></div>
-  `;
-  return wrapper;
-}
 
 // --- Letzten Standort laden ---
 function getSavedView() {
@@ -93,7 +49,7 @@ map.addControl(
   }),
   "bottom-right"
 );
-console.log("map erstellt", map);
+
 // --- Filter State ---
 const filters = {
   playground:    true,
@@ -130,10 +86,12 @@ function renderMarkers() {
     const cls = poi.nearby_toilet && poi.type === "playground" ? "playground-wc" : poi.type;
     const label = poi.name || LABELS[poi.type] || poi.type;
 
-    const el = createPinElement(cls);
+    const el = document.createElement("div");
+    el.className = `marker ${cls}`;
+    el.textContent = ICONS[cls] || ICONS[poi.type];
     el.title = label;
 
-    const marker = new maplibregl.Marker({ element: el, anchor: "bottom" })
+    const marker = new maplibregl.Marker({ element: el })
       .setLngLat([poi.lng, poi.lat])
       .setPopup(
         new maplibregl.Popup({ offset: 20, closeButton: false }).setHTML(`
