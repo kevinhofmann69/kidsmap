@@ -1,11 +1,19 @@
 const SUPABASE_URL = "https://epybdsrkxgkfrbwdnwae.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVweWJkc3JreGdrZnJid2Rud2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NTczODIsImV4cCI6MjA5MTUzMzM4Mn0.fKQ6d30zJ_rY6IsWRI7xr78uuSCEU0iM5swlJblLHbM";
 
-const ICONS = {
-  playground:      "🛝",
-  toilet:          "🚾",
-  "playground-wc": "🌞",
-  family_centre:   "🫃🏻",
+// Noto Emoji PNG URLs (128px, via GitHub raw)
+const EMOJI_IMGS = {
+  playground:      "https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/128/emoji_u1f6dd.png", // 🛝
+  toilet:          "https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/128/emoji_u1f6be.png", // 🚾
+  "playground-wc": "https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/128/emoji_u1f31e.png", // 🌞
+  family_centre:   "https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/128/emoji_u1fac3_1f3fb.png", // 🫃🏻
+};
+
+const PIN_COLORS = {
+  playground:      { fill: "#22c55e", shadow: "#15803d" },
+  toilet:          { fill: "#3b82f6", shadow: "#1e40af" },
+  "playground-wc": { fill: "#f97316", shadow: "#c2410c" },
+  family_centre:   { fill: "#a855f7", shadow: "#7e22ce" },
 };
 
 const LABELS = {
@@ -13,6 +21,45 @@ const LABELS = {
   toilet:        "Toilette",
   family_centre: "Familienzentrum",
 };
+
+// --- Pin Element erzeugen ---
+function createPinElement(cls) {
+  const { fill, shadow } = PIN_COLORS[cls] || PIN_COLORS.playground;
+  const imgSrc = EMOJI_IMGS[cls] || EMOJI_IMGS.playground;
+  const filterId = `sh-${Math.random().toString(36).slice(2, 8)}`;
+
+  const wrapper = document.createElement("div");
+  wrapper.style.cssText = "display:flex;flex-direction:column;align-items:center;cursor:pointer;";
+
+  wrapper.innerHTML = `
+    <div style="position:relative;width:42px;height:54px;">
+      <svg viewBox="0 0 56 72" fill="none" xmlns="http://www.w3.org/2000/svg"
+           style="position:absolute;top:0;left:0;width:100%;height:100%;">
+        <defs>
+          <filter id="${filterId}" x="-40%" y="-20%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="${shadow}" flood-opacity="0.3"/>
+          </filter>
+        </defs>
+        <path d="M28 4C16.954 4 8 12.954 8 24C8 38 28 68 28 68C28 68 48 38 48 24C48 12.954 39.046 4 28 4Z"
+              fill="${fill}" filter="url(#${filterId})"/>
+      </svg>
+      <img src="${imgSrc}"
+           style="position:absolute;top:7px;left:50%;transform:translateX(-50%);width:22px;height:22px;object-fit:contain;pointer-events:none;"
+           alt="" />
+    </div>
+    <div style="width:16px;height:5px;background:rgba(0,0,0,0.1);border-radius:50%;margin-top:-2px;"></div>
+  `;
+
+  // Bounce on hover
+  const inner = wrapper.querySelector("div");
+  wrapper.addEventListener("mouseenter", () => {
+    inner.style.animation = "none";
+    inner.offsetHeight;
+    inner.style.animation = "pin-bounce 0.4s cubic-bezier(.36,.07,.19,.97)";
+  });
+
+  return wrapper;
+}
 
 // --- Letzten Standort laden ---
 function getSavedView() {
@@ -86,12 +133,10 @@ function renderMarkers() {
     const cls = poi.nearby_toilet && poi.type === "playground" ? "playground-wc" : poi.type;
     const label = poi.name || LABELS[poi.type] || poi.type;
 
-    const el = document.createElement("div");
-    el.className = `marker ${cls}`;
-    el.textContent = ICONS[cls] || ICONS[poi.type];
+    const el = createPinElement(cls);
     el.title = label;
 
-    const marker = new maplibregl.Marker({ element: el })
+    const marker = new maplibregl.Marker({ element: el, anchor: "bottom" })
       .setLngLat([poi.lng, poi.lat])
       .setPopup(
         new maplibregl.Popup({ offset: 20, closeButton: false }).setHTML(`
